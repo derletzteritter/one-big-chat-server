@@ -1,37 +1,40 @@
-import express, { Request, Response } from 'express';
-import http from 'http';
-import { Server, Socket } from 'socket.io';
-import cors from 'cors';
+const express = require('express');
+const http = require('http') ;
+const socketio = require('socket.io');
+const cors = require('cors');
+
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = socketio(server);
 
-let users: any[] = [];
+const PORT = process.env.PORT || 5000;
+
+let users = [];
 
 app.use(cors());
 
-const removeUser = (name: string) => {
+const removeUser = (name) => {
   const index = users.findIndex((user) => user === name);
 
   if (index !== -1) return users.splice(index, 1)[0];
 };
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (req, res) => {
   res.send('Hello world');
 });
 
-io.sockets.on('connection', (socket: any) => {
+io.sockets.on('connection', (socket) => {
   console.log('A user has connected');
 
   socket.on(
     'message',
-    ({ message, username }: { message: string; username: string }) => {
+    ({ message, username }) => {
       io.emit('chatMessage', { message, username });
     },
   );
 
-  socket.on('join', (username: string) => {
+  socket.on('join', (username) => {
     socket.username = username;
     users.push(socket.username);
     io.emit('users', users);
@@ -51,6 +54,6 @@ io.sockets.on('connection', (socket: any) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log('Server running on localhost port 5000');
+server.listen(PORT, () => {
+  console.log('Server running on localhost port: ', PORT);
 });
