@@ -1,40 +1,40 @@
-const express = require('express');
-const http = require('http') ;
-const socketio = require('socket.io');
-const cors = require('cors');
+import express, { Request, Response } from 'express';
+import http from 'http'
+import { Server, Socket } from "socket.io";
+import cors from 'cors';
 
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
+const io = new Server(server);
 
 const PORT = process.env.PORT || 5000;
 
-let users = [];
+let users: any[] = [];
 
 app.use(cors());
 
-const removeUser = (name) => {
+const removeUser = (name: string) => {
   const index = users.findIndex((user) => user === name);
 
   if (index !== -1) return users.splice(index, 1)[0];
 };
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.send('Hello world');
 });
 
-io.sockets.on('connection', (socket) => {
+io.sockets.on('connection', (socket: any) => {
   console.log('A user has connected');
 
   socket.on(
     'message',
-    ({ message, username }) => {
+    ({ message, username }: { message: string, username: string }) => {
       io.emit('chatMessage', { message, username });
     },
   );
 
-  socket.on('join', (username) => {
+  socket.on('join', (username: string) => {
     socket.username = username;
     users.push(socket.username);
     io.emit('users', users);

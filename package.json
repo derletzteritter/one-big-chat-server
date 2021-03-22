@@ -1,12 +1,12 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "server.ts",
   "author": "Christopher Gjelten (chip)",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "nodemon server.ts",
+    "start": "ts-node server.ts"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
@@ -14,6 +14,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "socket.io": "^4.0.0"
+    "socket.io": "^4.0.0",
+    "ts-node": "^9.1.1"
   }
 }
